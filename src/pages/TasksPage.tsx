@@ -1,5 +1,4 @@
-import { useState, useRef, useMemo, useCallback, type ChangeEvent } from 'react'
-import Header from '@/components/Header'
+import { useState, useMemo, useCallback } from 'react'
 import TaskList from '@/components/TaskList'
 import { Input } from '@/components/ui/input'
 // import { Button } from '@/components/ui/button'
@@ -9,8 +8,8 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
 import type { TaskStatus } from '@/types/task'
-import StatCard from './components/StatCard'
-import { useLocalStorage } from './hooks/useLocalStorage'
+import StatCard from '../components/StatCard'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useOptimistic } from 'react'
 import AddTaskForm from '@/components/AddTaskForm'
 
@@ -35,7 +34,7 @@ const initialTasks: Task[] = [
   },
 ]
 
-function App() {
+function TasksPage() {
   
   // State หลักของแอป — อยู่ที่ Component บนสุด
   // const [tasks, setTasks] = useState<Task[]>(initialTasks)
@@ -133,7 +132,6 @@ function App() {
 
   return (
     <>
-      <Header />
       <main className="mx-auto max-w-6xl space-y-6 p-6">
 
         <div className="grid grid-cols-3 gap-4">
@@ -187,4 +185,4 @@ function App() {
   )
 }
 
-export default App
+export default TasksPage

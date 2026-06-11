@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { Task, TaskPriority } from '@/types/task'
 import { priorityLabel, statusLabel } from '@/types/task'
+import { Link } from 'react-router'
 
 // กำหนดโครงสร้าง Props ด้วย interface
 interface TaskCardProps {
@@ -26,7 +27,9 @@ function TaskCard({ task, onToggle, onDelete }: TaskCardProps) {
       <CardHeader>
         <CardTitle className="flex items-center justify-between gap-2">
           {/* Conditional Rendering — ขีดฆ่าเมื่องานเสร็จ */}
-          <span className={isDone ? 'line-through' : ''}>{task.title}</span>
+          <Link to={`/tasks/${task.id}`} className={`hover:text-primary hover:underline ${isDone ? 'line-through' : ''}`}>
+            {task.title}
+          </Link>
           <Badge variant={priorityVariant[task.priority]}>
             {priorityLabel[task.priority]}
           </Badge>

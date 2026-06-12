@@ -20,7 +20,7 @@ export const registerSchema = loginSchema
 export const taskSchema = z.object({
   title: z.string().min(1, 'กรุณากรอกชื่องาน'),
   description: z.string().optional(),
-  priority: z.enum(['low', 'medium', 'high']),
+  priority: z.enum(['LOW', 'MEDIUM', 'HIGH']),
 })
 
 // สร้าง type จาก schema อัตโนมัติ — ไม่ต้องประกาศซ้ำ

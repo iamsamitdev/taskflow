@@ -3,8 +3,8 @@
 // ============================================
 
 // Literal Union Type — จำกัดค่าที่เป็นไปได้ ป้องกันพิมพ์ผิด
-export type TaskStatus = 'todo' | 'doing' | 'done'
-export type TaskPriority = 'low' | 'medium' | 'high'
+export type TaskStatus = 'TODO' | 'DOING' | 'DONE'
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH'
 
 // interface สำหรับ Object ที่มีโครงสร้างชัดเจน
 export interface Task {
@@ -19,13 +19,13 @@ export interface Task {
 
 // ตัวช่วยแปลงค่า priority เป็นข้อความภาษาไทย
 export const priorityLabel: Record<TaskPriority, string> = {
-  low: 'ต่ำ',
-  medium: 'ปานกลาง',
-  high: 'สูง',
+  LOW: 'ต่ำ',
+  MEDIUM: 'ปานกลาง',
+  HIGH: 'สูง',
 }
 
 export const statusLabel: Record<TaskStatus, string> = {
-  todo: 'รอดำเนินการ',
-  doing: 'กำลังทำ',
-  done: 'เสร็จแล้ว',
+  TODO: 'รอดำเนินการ',
+  DOING: 'กำลังทำ',
+  DONE: 'เสร็จแล้ว',
 }

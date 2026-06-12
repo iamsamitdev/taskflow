@@ -1,4 +1,16 @@
-allowBuilds:
-  '@prisma/engines': true
-  esbuild: false
-  prisma: true
+# Packages whose lifecycle (build) scripts pnpm is allowed to run
+onlyBuiltDependencies:
+  - '@prisma/engines'
+  - prisma
+
+# Packages whose build scripts we deliberately skip (suppresses ERR_PNPM_IGNORED_BUILDS).
+# esbuild's binary is only needed by tsx in dev; production runs compiled JS via `node dist/index.js`.
+ignoredBuiltDependencies:
+  - esbuild
+
+# ทนต่อเน็ตช้า/ไม่นิ่ง: เพิ่ม timeout และจำนวน retry, ลด concurrency ให้ connection ไม่ล้น
+fetchRetries: 5
+fetchRetryMintimeout: 20000
+fetchRetryMaxtimeout: 180000
+fetchTimeout: 300000
+networkConcurrency: 4

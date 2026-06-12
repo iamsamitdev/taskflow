@@ -4,6 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { useTask, useUpdateTask, useDeleteTask } from '@/features/tasks/queries'
 import { priorityLabel, statusLabel } from '@/types/task'
 
@@ -26,7 +37,7 @@ function TaskDetailPage() {
     )
   }
 
-  const isDone = task.status === 'done'
+  const isDone = task.status === 'DONE'
 
   const handleDelete = () => {
     deleteMutation.mutate(task.id, {
@@ -44,7 +55,7 @@ function TaskDetailPage() {
         <CardHeader>
           <CardTitle className="flex items-start justify-between gap-2 text-2xl">
             <span className={isDone ? 'line-through opacity-60' : ''}>{task.title}</span>
-            <Badge variant={task.priority === 'high' ? 'destructive' : 'default'}>
+            <Badge variant={task.priority === 'HIGH' ? 'destructive' : 'default'}>
               {priorityLabel[task.priority]}
             </Badge>
           </CardTitle>
@@ -78,20 +89,34 @@ function TaskDetailPage() {
               onClick={() =>
                 updateMutation.mutate({
                   id: task.id,
-                  status: isDone ? 'todo' : 'done',
+                  status: isDone ? 'TODO' : 'DONE',
                 })
               }
               disabled={updateMutation.isPending}
             >
               {isDone ? 'ทำใหม่อีกครั้ง' : 'ทำเครื่องหมายว่าเสร็จ'}
             </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={deleteMutation.isPending}
-            >
-              ลบงานนี้
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" disabled={deleteMutation.isPending}>
+                  ลบงานนี้
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>ยืนยันการลบงาน</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    ต้องการลบ &quot;{task.title}&quot; ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>ยกเลิก</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete}>
+                    ลบ
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </CardContent>
       </Card>

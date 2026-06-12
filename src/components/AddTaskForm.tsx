@@ -1,47 +1,62 @@
 import { useRef } from 'react'
 import { useFormStatus } from 'react-dom'
+import { Plus } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import type { Task } from '@/types/task'
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select'
+import { useCreateTask } from '@/features/tasks/queries'
+import type { TaskPriority } from '@/types/task'
 
-interface AddTaskFormProps {
-  onAdd: (task: Task) => Promise<void>
-}
-
-// useFormStatus ต้องอยู่ใน component ลูกของ <form> เท่านั้น
+// useFormStatus ต้องอยู่ใน component ลูกของ <form> เท่านั้น (React 19)
 function SubmitButton() {
   const { pending } = useFormStatus()
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? 'กำลังบันทึก...' : 'เพิ่มงาน'}
+      <Plus /> {pending ? 'กำลังบันทึก...' : 'เพิ่มงาน'}
     </Button>
   )
 }
 
-function AddTaskForm({ onAdd }: AddTaskFormProps) {
+function AddTaskForm() {
   const formRef = useRef<HTMLFormElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const createMutation = useCreateTask()
 
-  // Action — ฟังก์ชันที่รับ FormData ตรงจาก <form action={...}>
+  // React 19 Form Action — รับ FormData ตรงจาก <form action={...}>
   const addTaskAction = async (formData: FormData) => {
     const title = String(formData.get('title') ?? '').trim()
+    const priority = (formData.get('priority') ?? 'MEDIUM') as TaskPriority
     if (!title) return
 
-    const newTask: Task = {
-      id: crypto.randomUUID(),
-      title,
-      status: 'todo',
-      priority: 'medium',
-      createdAt: new Date().toISOString(),
-    }
-
-    await onAdd(newTask)
-    formRef.current?.reset()   // ล้างฟอร์มหลังบันทึกสำเร็จ
+    await createMutation.mutateAsync({ title, priority })
+    formRef.current?.reset()
+    inputRef.current?.focus()   // useRef — กลับมาโฟกัสช่องกรอกทันที
   }
 
   return (
-    <form ref={formRef} action={addTaskAction} className="flex gap-2">
-      <Input name="title" placeholder="พิมพ์ชื่องานใหม่..." autoComplete="off" />
-      <SubmitButton />
+    <form ref={formRef} action={addTaskAction} className="flex flex-col gap-2 sm:flex-row">
+      <Input
+        ref={inputRef}
+        name="title"
+        placeholder="พิมพ์ชื่องานใหม่..."
+        autoComplete="off"
+        className="flex-1"
+      />
+      <div className="flex gap-2">
+        <Select name="priority" defaultValue="MEDIUM">
+          <SelectTrigger className="w-32">
+            <SelectValue placeholder="ความสำคัญ" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="LOW">ต่ำ</SelectItem>
+            <SelectItem value="MEDIUM">ปานกลาง</SelectItem>
+            <SelectItem value="HIGH">สูง</SelectItem>
+          </SelectContent>
+        </Select>
+        <SubmitButton />
+      </div>
     </form>
   )
 }

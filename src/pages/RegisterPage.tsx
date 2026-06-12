@@ -7,12 +7,12 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldLabel, FieldError } from '@/components/ui/field'
 import { registerSchema, type RegisterInput } from '@/features/auth/schemas'
-// import { useAuthStore } from '@/features/auth/useAuthStore'
+import { useAuthStore } from '../store/useAuthStore'
 
 function RegisterPage() {
 
   const navigate = useNavigate()
-//   const registerUser = useAuthStore((state) => state.register)
+  const registerUser = useAuthStore((state) => state.register)
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -20,7 +20,7 @@ function RegisterPage() {
   })
 
   const onSubmit = async (values: RegisterInput) => {
-    // await register(values.email, values.password)
+    await registerUser(values.name, values.email, values.password)
     toast.success('สมัครสมาชิกสำเร็จ ยินดีต้อนรับ! 🎉')
     navigate('/tasks')
   }

@@ -4,6 +4,9 @@ function DashboardPage() {
 
   const { count, inc } = useStore() as { count: number; inc: () => void }
 
+  // ทดสอบ throw new Error() เพื่อดูว่า ErrorBoundary ทำงานหรือไม่
+  // throw new Error('Test Error Boundary')
+
   return (
     <div>
       <h1 className="text-3xl font-bold">สวัสดี, ยินดีต้อนรับสู่แดชบอร์ด! 👋</h1>

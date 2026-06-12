@@ -1,9 +1,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import type { Task, TaskPriority } from '@/types/task'
 import { priorityLabel, statusLabel } from '@/types/task'
 import { Link } from 'react-router'
+import { useAuthStore } from '@/store/useAuthStore'
+import { memo } from 'react'
 
 // กำหนดโครงสร้าง Props ด้วย interface
 interface TaskCardProps {
@@ -21,6 +34,10 @@ const priorityVariant: Record<TaskPriority, 'secondary' | 'default' | 'destructi
 
 function TaskCard({ task, onToggle, onDelete }: TaskCardProps) {
   const isDone = task.status === 'done'
+
+  const user = useAuthStore((state) => state.user)
+  const canDelete =
+    user?.role === 'admin' || (task as Task & { ownerId?: string }).ownerId === user?.id
 
   return (
     <Card className={isDone ? 'opacity-60' : ''}>
@@ -46,9 +63,27 @@ function TaskCard({ task, onToggle, onDelete }: TaskCardProps) {
             <Button size="sm" variant="outline" onClick={() => onToggle(task.id)}>
               {isDone ? 'ทำใหม่' : 'เสร็จแล้ว'}
             </Button>
-            <Button size="sm" variant="destructive" onClick={() => onDelete(task.id)}>
-              ลบ
-            </Button>
+            {canDelete && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button size="sm" variant="destructive">ลบ</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>ยืนยันการลบงาน</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      ต้องการลบ &quot;{task.title}&quot; ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>ยกเลิก</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => onDelete(task.id)}>
+                      ลบ
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         </div>
       </CardContent>
@@ -56,4 +91,4 @@ function TaskCard({ task, onToggle, onDelete }: TaskCardProps) {
   )
 }
 
-export default TaskCard
+export default memo(TaskCard)

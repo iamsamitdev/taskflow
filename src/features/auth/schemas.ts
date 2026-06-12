@@ -13,9 +13,17 @@ export const registerSchema = loginSchema
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'รหัสผ่านทั้งสองช่องไม่ตรงกัน',
-    path: ['confirmPassword'],   // ให้ error ไปโผล่ที่ช่องยืนยันรหัสผ่าน
+    path: ['confirmPassword'],
   })
+
+// schema สำหรับฟอร์มเพิ่ม/แก้ไขงาน
+export const taskSchema = z.object({
+  title: z.string().min(1, 'กรุณากรอกชื่องาน'),
+  description: z.string().optional(),
+  priority: z.enum(['low', 'medium', 'high']),
+})
 
 // สร้าง type จาก schema อัตโนมัติ — ไม่ต้องประกาศซ้ำ
 export type LoginInput = z.infer<typeof loginSchema>
 export type RegisterInput = z.infer<typeof registerSchema>
+export type TaskInput = z.infer<typeof taskSchema>

@@ -8,8 +8,7 @@ import NotFoundPage from '@/pages/NotFoundPage'
 import LoginPage from '@/pages/LoginPage'
 import RegisterPage from '@/pages/RegisterPage'
 import ProtectedRoute from './ProtectedRoute'
-// import RegisterPage from '@/pages/RegisterPage'
-// import ProtectedRoute from '@/app/ProtectedRoute'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 
@@ -24,6 +23,7 @@ export const router = createBrowserRouter([
   {
     // Layout Route — ทุก children จะถูกครอบด้วย MainLayout
     element: <MainLayout />,
+    errorElement: <ErrorBoundary />,
     children: [
       // Protected routes
       {

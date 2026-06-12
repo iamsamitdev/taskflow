@@ -15,6 +15,11 @@ RUN pnpm install --frozen-lockfile
 # Copy source code
 COPY . .
 
+# API URL สำหรับ production build — .env ถูกตัดออกโดย .dockerignore
+# ใช้ /api (relative) ให้ nginx proxy ไปหา backend เอง (override ได้ด้วย --build-arg)
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=$VITE_API_URL
+
 # Build the app
 RUN pnpm build
 
